@@ -1,3 +1,4 @@
+#program 1
 import pandas as pd
 import numpy as np
  
@@ -32,3 +33,142 @@ def train(c,t):
  
 #obtaining the final hypothesis
 print("n The final hypothesis is:",train(d,target))
+
+
+
+
+
+
+#program 8
+
+import numpy as np 
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split  
+from sklearn import metrics
+
+names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'Class']
+
+# Read dataset to pandas dataframe
+
+dataset = pd.read_csv(r'C:\Users\priyanka\Desktop\8-dataset.csv', names=names)
+X = dataset.iloc[:, :-1]  
+y = dataset.iloc[:, -1]
+print(X.head())
+Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, test_size=0.10) 
+
+classifier = KNeighborsClassifier(n_neighbors=5).fit(Xtrain, ytrain) 
+
+ypred = classifier.predict(Xtest)
+
+i = 0
+print ("\n-------------------------------------------------------------------------")
+print ('%-25s %-25s %-25s' % ('Original Label', 'Predicted Label', 'Correct/Wrong'))
+print ("-------------------------------------------------------------------------")
+for label in ytest:
+    print ('%-25s %-25s' % (label, ypred[i]), end="")
+    if (label == ypred[i]):
+        print (' %-25s' % ('Correct'))
+    else:
+        print (' %-25s' % ('Wrong'))
+    i = i + 1
+print ("-------------------------------------------------------------------------")
+print("\nConfusion Matrix:\n",metrics.confusion_matrix(ytest, ypred))  
+print ("-------------------------------------------------------------------------")
+print("\nClassification Report:\n",metrics.classification_report(ytest, ypred)) 
+print ("-------------------------------------------------------------------------")
+print('Accuracy of the classifer is %0.2f' % metrics.accuracy_score(ytest,ypred))
+print ("-------------------------------------------------------------------------")
+
+
+
+
+#program 9
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+X=np.linspace(-3,3,1000)
+
+print(X)
+
+X+=np.random.normal(scale=0.05,size=1000)
+
+Y=np.log(np.abs((X**2)-1)+0.5)
+
+print(Y)
+np.linspace(2.0, 3.0, num=5)
+plt.scatter(X,Y,alpha=0.32)
+def local_regression(x0,X,Y,tau):
+
+    x0=np.r_[1,x0]
+
+    # print(x0)
+
+    #print("len(X)",len(X))
+
+    X=np.c_[np.ones(len(X)),X]
+
+    #print(X)
+
+    xw=X.T *radial_kernel(x0,X,tau)
+
+    print(xw)
+
+    beta=np.linalg.pinv(xw@X)@xw@Y
+
+    return x0@beta
+def radial_kernel(x0, X, tau):
+
+    return np.exp(np.sum((X - x0) ** 2, axis=1) / (-2 * tau * tau))
+def plot_lwr(tau):
+
+    domain=np.linspace(-3,3,num=300)
+
+    prediction=[local_regression(x0,X,Y,tau) for x0 in domain]
+
+    plt.scatter(X,Y,alpha=0.3)
+
+    plt.plot(domain,prediction,color="red")
+
+    return plt
+
+plot_lwr(0.01)
+
+
+#program 13.............................................
+
+
+import numpy as np
+import pandas as pd
+import csv 
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.models import BayesianModel
+from pgmpy.inference import VariableElimination
+
+heartDisease = pd.read_csv('heart.csv')
+heartDisease = heartDisease.replace('?',np.nan)
+
+print('Sample instances from the dataset are given below')
+print(heartDisease.head())
+
+print('\n Attributes and datatypes')
+print(heartDisease.dtypes)
+
+model= BayesianModel([('age','heartdisease'),('sex','heartdisease'),('exang','heartdisease'),('cp','heartdisease'),('heartdisease','restecg'),('heartdisease','chol')])
+print('\nLearning CPD using Maximum likelihood estimators')
+model.fit(heartDisease,estimator=MaximumLikelihoodEstimator)
+
+print('\n Inferencing with Bayesian Network:')
+HeartDiseasetest_infer = VariableElimination(model)
+
+print('\n 1. Probability of HeartDisease given evidence= restecg')
+q1=HeartDiseasetest_infer.query(variables=['heartdisease'],evidence={'restecg':1})
+print(q1)
+
+print('\n 2. Probability of HeartDisease given evidence= cp ')
+q2=HeartDiseasetest_infer.query(variables=['heartdisease'],evidence={'cp':2})
+print(q2)
+
+
