@@ -6,46 +6,50 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-df=pd.read_csv('diabetes.csv') print(df.shape)
+df=pd.read_csv('diabetes.csv') 
+print(df.shape)
 
 #check outliers
 
-def box plot(df, ft):
+def boxplot(df,ft):
 
-df.boxplot (column=[ft]) box_plot(df, 'Glucose')
+    df.boxplot(column=[ft]) 
+box_plot(df,'Glucose')
 
 #detect outliers
 
-def outliers (df, ft):
+def outliers(df,ft):
 
-q1=df[ft].quantile (0.25) q3=df[ft].quantile (0.75)
+    q1=df[ft].quantile (0.25) 
+    q3=df[ft].quantile (0.75)
 
-IQRq3-q1
+    IQRq3-q1
 
-lowr=q1-1.5 IQR
+    lowr=q1-1.5*IQR
 
-uppraq3+1.5 IQR
+    uppraq3+1.5*IQR
 
-1s=df.index[(df[ft]<lowr)|(df[ft]>uppr)]
+    ls=df.index[(df[ft]<lowr)|(df[ft]>uppr)]
 
-return 1s
+    return ls
+
 
 
 #store the output indices from mutliple columns
 
 index_list=[]
 
-for i in ['Glucose, 'Blood Pressure']:
+for i in ['Glucose','BloodPressure']:
 
-index_list.extend(outliers (df,i))
+    index_list.extend(outliers (df,i))
 
-#remove outliesr dfsdf.drop(15) return df
+#remove outliesr 
+def remove(df,ls):
+    ls=sorted(set(s))
+    df=df.drop(15) 
+    return df
 
-Is sorted(set(s))
-
-def remove(df, 1s):
-
-result=remove(df, index_list)
+result=remove(df,index_list)
 
 box_plot(result, 'Glucose')
 
